@@ -17,12 +17,12 @@ class PredictController:
     def predict_personality(self, input_data):
         """Handle prediction request with detailed error handling"""
         try:
-            # Validate input
+            
             if not validate_input(input_data):
                 logger.warning("Invalid input data")
                 return {"error": "Invalid input data"}, 400
             
-            # Make prediction
+            
             logger.debug("Making prediction")
             personality, confidence = self.classifier.predict(input_data)
             logger.info(f"Prediction: {personality} with {confidence*100:.1f}% confidence")

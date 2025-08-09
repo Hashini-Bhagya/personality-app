@@ -20,3 +20,5 @@ def predict():
     except Exception as e:
         logger.error(f"API error: {str(e)}", exc_info=True)
         return jsonify({"error": "Internal server error"}), 500
+    
+    
