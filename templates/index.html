@@ -2,108 +2,717 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personality Predictor</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #000000 0%, #808b9e 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: rgb(196, 171, 204);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.85;
+        }
+
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .illustration {
+            flex: 1;
+            min-width: 300px;
+            background: linear-gradient(to bottom right, #f8f9fa, #e9ecef);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            position: relative;
+        }
+        
+        .new-character {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            max-width: 400px;
+        }
+        
+        /* Head */
+        .head {
+            position: absolute;
+            width: 160px;
+            height: 160px;
+            background: #fff;
+            border: 4px solid #333;
+            border-radius: 50%;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            overflow: hidden;
+        }
+        
+        
+        .eyes {
+            position: absolute;
+            top: 50px;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .eye {
+            width: 28px;
+            height: 28px;
+            background: #333;
+            border-radius: 50%;
+            position: relative;
+            animation: blink 4s infinite;
+        }
+        
+        .eye::after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #fff;
+            border-radius: 50%;
+            top: 5px;
+            left: 5px;
+        }
+        
+        @keyframes blink {
+            0%, 45%, 55%, 100% { height: 28px; }
+            50% { height: 4px; }
+        }
+        
+        .mouth {
+            position: absolute;
+            width: 50px;
+            height: 25px;
+            border: 3px solid transparent;
+            border-bottom: 3px solid #333;
+            border-radius: 0 0 50% 50%;
+            bottom: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        /* Body */
+        .body {
+            position: absolute;
+            width: 140px;
+            height: 150px;
+            background: #fff;
+            border: 4px solid #333;
+            border-radius: 50% 50% 0 0;
+            top: 200px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+        
+        /* Arms */
+        .arm {
+            position: absolute;
+            width: 100px;
+            height: 25px;
+            background: #fff;
+            border: 4px solid #333;
+            border-radius: 20px;
+            top: 230px;
+            z-index: 5;
+        }
+        
+        .arm.left {
+            left: 20px;
+            transform: rotate(-25deg);
+        }
+        
+        .arm.right {
+            right: 20px;
+            transform: rotate(25deg);
+        }
+        
+        /* Thought bubble */
+        .thought-bubble {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 140px;
+            height: 100px;
+            background: #fff;
+            border: 4px solid #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: float 4s infinite ease-in-out;
+            z-index: 15;
+        }
+        
+        .thought-bubble::before {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: #fff;
+            border-right: 4px solid #333;
+            border-bottom: 4px solid #333;
+            bottom: -20px;
+            left: 30px;
+            transform: rotate(45deg);
+            z-index: -1;
+        }
+        
+        .thought-bubble .brain {
+            font-size: 3.5rem;
+            color: #333;
+            animation: pulse 2s infinite;
+        }
+        
+
+        .content-wrapper {
+            display: flex;
+            min-height: 500px;
+        }
+
+        .illustration {
+            flex: 1;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            border-right: 1px solid #eaeaea;
+        }
+
+        .illustration img {
+            max-width: 100%;
+            height: auto;
+            max-height: 380px;
+            filter: grayscale(100%);
+        }
+
+        .form-container {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .form-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed #ddd;
+        }
+
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 15px;
+        }
+
+        .form-section h2 {
+            color: #444;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .form-section h2 i {
+            margin-right: 10px;
+            background: #eaeaea;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: #f9f9f9;
+            transition: all 0.3s ease;
+            color: #333;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #777;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(119, 119, 119, 0.1);
+        }
+
+        input::placeholder {
+            color: #aaa;
+        }
+
+        button {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            display: block;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #222;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .note {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.95rem;
+            color: #777;
+            font-style: italic;
+        }
+
+        .result-container {
+            margin-top: 30px;
+            padding: 30px;
+            border-radius: 15px;
+            background: linear-gradient(to right, #f0f4ff, #e6e9ff);
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.6s ease-out;
+            border: 2px solid #d1d5ff;
+        }
+         @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+
+        .result-container h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+        }
+
+        .result-container p {
+           font-size: 18px;
+            color: #4a5568;
+            line-height: 1.6;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+        .personality-icon {
+            font-size: 60px;
+            margin-bottom: 25px;
+        }
+        
+        .introvert { color: #3a1c71; }
+        .extrovert { color: #ff6b6b; }
+        
+        .confidence-meter {
+            height: 16px;
+            background: #d1d5ff;
+            border-radius: 10px;
+            margin: 25px auto;
+            width: 85%;
+            overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .confidence-level {
+            height: 100%;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+        }
+        
+        .confidence-label {
+            font-weight: 600;
+            color: #3a1c71;
+            font-size: 1.1rem;
+        }
+
+        .confidence {
+            display: inline-block;
+            background: #eaeaea;
+            color: #333;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-top: 10px;
+            font-size: 1rem;
+        }
+
+        .error {
+            color: #d9534f;
+            font-weight: 600;
+            text-align: center;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            background: rgba(217, 83, 79, 0.1);
+            display: none;
+        }
+
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(51, 51, 51, 0.1);
+            border-top: 5px solid #333;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive design */
+        @media (max-width: 992px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+            
+            .illustration {
+                padding: 20px;
+                max-height: 300px;
+                border-right: none;
+                border-bottom: 1px solid #eaeaea;
+            }
+            
+            .illustration img {
+                max-height: 250px;
+            }
+            
+            .form-container {
+                padding: 25px;
+            }
+        }
+
+          .result-container {
+            margin-top: 30px;
+            padding: 30px;
+            border-radius: 15px;
+            background: linear-gradient(to right, #f0f4ff, #e6e9ff);
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.6s ease-out;
+            border: 2px solid #d1d5ff;
+        }
+        
+        .result-container h2 {
+            font-size: 32px;
+            margin-bottom: 15px;
+            color: #3a1c71;
+        }
+        
+        .result-container p {
+            font-size: 18px;
+            color: #4a5568;
+            line-height: 1.6;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+        
+        .personality-icon {
+            font-size: 60px;
+            margin-bottom: 25px;
+        }
+        
+        .introvert { color: #3a1c71; }
+        .extrovert { color: #ff6b6b; }
+        
+        .confidence-meter {
+            height: 16px;
+            background: #d1d5ff;
+            border-radius: 10px;
+            margin: 25px auto;
+            width: 85%;
+            overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .confidence-level {
+            height: 100%;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+        }
+        
+        .confidence-label {
+            font-weight: 600;
+            color: #3a1c71;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 576px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
+            
+            .form-section h2 {
+                font-size: 1.3rem;
+            }
+            
+            .result-container h2 {
+                font-size: 1.5rem;
+            }
+            
+            .container {
+                border-radius: 10px;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Personality Predictor</h1>
-        <p>Discover if you're an Introvert or Extrovert</p>
+        <header>
+            <h1><i class="fas fa-brain"></i> Personality Predictor</h1>
+            <p>Discover if you're an introvert or extrovert in minutes!</p>
+        </header>
         
-        <form id="predictionForm">
-            <div class="form-group">
-                <label>Time spent alone (hours/day):</label>
-                <input type="number" step="0.1" name="Time_spent_Alone" required>
+         <div class="content">
+            <div class="illustration">
+                <div class="new-character">
+                    <div class="thought-bubble">
+                        <i class="fas fa-brain brain"></i>
+                    </div>
+                    <div class="head">
+                        <div class="eyes">
+                            <div class="eye"></div>
+                            <div class="eye"></div>
+                        </div>
+                        <div class="mouth"></div>
+                    </div>
+                    <div class="body"></div>
+                    <div class="arm left"></div>
+                    <div class="arm right"></div>
+                </div>
             </div>
             
-            <div class="form-group">
-                <label>Social event attendance (times/week):</label>
-                <input type="number" name="Social_event_attendance" required>
+            <div class="form-container">
+                <form id="predictionForm">
+                    <!-- Time Spent Section -->
+                    <div class="form-section">
+                        <h2><i class="fas fa-clock"></i> Time Spent</h2>
+                        
+                        <div class="form-group">
+                            <label for="aloneTime">Alone time (hrs/day)</label>
+                            <input type="number" step="0.1" id="aloneTime" name="Time_spent_Alone" required placeholder="e.g., 3.5">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="goingOut">Going out (times/day)</label>
+                            <input type="number" id="goingOut" name="Going_outside" required placeholder="e.g., 4">
+                        </div>
+                    </div>
+                    
+                    <!-- Social Activity Section -->
+                    <div class="form-section">
+                        <h2><i class="fas fa-users"></i> Social Activity</h2>
+                        
+                        <div class="form-group">
+                            <label for="socialEvents">Social events (times/week)</label>
+                            <input type="number" id="socialEvents" name="Social_event_attendance" required placeholder="e.g., 2">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="friendCircle">Friend circle size</label>
+                            <input type="number" id="friendCircle" name="Friends_circle_size" required placeholder="e.g., 10">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="postFrequency">Post frequency (times/week)</label>
+                            <input type="number" id="postFrequency" name="Post_frequency" required placeholder="e.g., 5">
+                        </div>
+                    </div>
+                    
+                    <!-- Psychological Factors Section -->
+                    <div class="form-section">
+                        <h2><i class="fas fa-brain"></i> Psychological Factors</h2>
+                        
+                        <div class="form-group">
+                            <label for="stageFear">Do you have stage fear?</label>
+                            <select id="stageFear" name="Stage_fear" required>
+                                <option value="">Select an option</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="drainedSocial">Do you feel drained after socializing?</label>
+                            <select id="drainedSocial" name="Drained_after_socializing" required>
+                                <option value="">Select an option</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button type="submit">
+                        <i class="fas fa-bolt"></i> Predict My Personality
+                    </button>
+                    
+                    <p class="note">
+                        Submit the form to see your personality prediction - Try our sample data using the form above.
+                    </p>
+                </form>
+                
+                <div class="loader" id="loader">
+                    <div class="spinner"></div>
+                    <p>Analyzing your personality traits...</p>
+                </div>
+                
+                <div class="error" id="error"></div>
+                
+                <div class="result-container" id="result">
+                    <!-- Result will be displayed here -->
+                </div>
             </div>
-            
-            <div class="form-group">
-                <label>Going outside (times/week):</label>
-                <input type="number" name="Going_outside" required>
-            </div>
-            
-            <div class="form-group">
-                <label>Friends circle size:</label>
-                <input type="number" name="Friends_circle_size" required>
-            </div>
-            
-            <div class="form-group">
-                <label>Post frequency (times/week):</label>
-                <input type="number" name="Post_frequency" required>
-            </div>
-            
-            <div class="form-group">
-                <label>Stage fear:</label>
-                <select name="Stage_fear" required>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label>Drained after socializing:</label>
-                <select name="Drained_after_socializing" required>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                </select>
-            </div>
-            
-            <button type="submit">Predict Personality</button>
-        </form>
-        
-        <div id="result" class="result-container"></div>
+        </div>
     </div>
-<script>
-    document.getElementById('predictionForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const formData = new FormData(e.target);
-        const data = Object.fromEntries(formData.entries());
-        
-        // Convert numerical values to numbers
-        const numericalFields = [
-            'Time_spent_Alone',
-            'Social_event_attendance',
-            'Going_outside',
-            'Friends_circle_size',
-            'Post_frequency'
-        ];
-        
-        numericalFields.forEach(field => {
-            data[field] = parseFloat(data[field]);
-        });
-        
-        try {
-            const response = await fetch('/api/predict', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
+    
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Convert numerical values to numbers
+            const numericalFields = [
+                'Time_spent_Alone',
+                'Social_event_attendance',
+                'Going_outside',
+                'Friends_circle_size',
+                'Post_frequency'
+            ];
+            
+            numericalFields.forEach(field => {
+                data[field] = parseFloat(data[field]);
             });
             
-            // Check for HTTP errors
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`HTTP error! Status: ${response.status}, Response: ${errorText}`);
-            }
+            // Show loading state
+            const resultContainer = document.getElementById('result');
+            resultContainer.style.display = 'block';
+            resultContainer.innerHTML = '<p>Analyzing your personality...</p>';
             
-            const result = await response.json();
-            document.getElementById('result').innerHTML = `
-                <h2>You are an: ${result.personality}</h2>
-                <p>Confidence: ${(result.confidence * 100).toFixed(1)}%</p>
-            `;
-        } catch (error) {
-            console.error('Prediction error:', error);
-            document.getElementById('result').innerHTML = `
-                <p class="error">Error: ${error.message}</p>
-            `;
-        }
-    });
-</script>
+            try {
+                const response = await fetch('/api/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                // Check for HTTP errors
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Error: ${errorText}`);
+                }
+                
+                const result = await response.json();
+                resultContainer.innerHTML = `
+                <div class="personality-icon">
+                        <i class="fas ${result.personality === 'Introvert' ? 'fa-moon introvert' : 'fa-sun extrovert'}"></i>
+                    </div>
+                    <h2>You are an: ${result.personality}</h2>
+
+                    <p class="confidence-label">Confidence: ${(result.confidence * 100).toFixed(1)}%</p>
+
+                   
+                `;
+            } catch (error) {
+                console.error('Prediction error:', error);
+                resultContainer.innerHTML = `
+                    <p class="error">${error.message || 'An error occurred. Please try again.'}</p>
+                `;
+            }
+        });
+    </script>
 </body>
 </html>
